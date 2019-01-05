@@ -14,7 +14,9 @@ class Square {
   draw() {
     fill(this.color);
     if (this.moving) {
-      let aug = (this.dir * (this.speed * ((new Date().getTime() - this.startedMoving) / 75)));
+      let aug =
+        (this.dir *
+          ((this.speed + Number(speedSlider.value()) * ((new Date().getTime() - this.startedMoving) / 75))));
       console.log(aug);
       this.x += aug;
     }
@@ -34,15 +36,16 @@ class Square {
   }
 
   overlaps(body) {
-    return ((this.x + this.sideSize) > (body.x)) && (this.x < (body.x + body.sideSize));
+    return ((this.x + this.sideSize) > (body.x)) &&
+      (this.x < (body.x + body.sideSize));
   }
 
   checkCollisions(world) {
     for (let body of world) {
       if (this.id !== body.id && this.overlaps(body)) {
-        console.log(`Body ${this.x},${this.y} collides with body at ${body.x}, ${body.y}`);
+        console.log(`Body ${this.x},${this.y} collides with body at ${
+            body.x}, ${body.y}`);
         this.dir *= -1;
-
       }
     }
   }
@@ -80,6 +83,8 @@ function keyReleased() {
 
 let s1, s2;
 let collideBox;
+let speedSlider;
+let speedP;
 
 function ground() {
   fill(81);
@@ -94,16 +99,19 @@ function setup() {
   ground();
   s1 = new Square(50, 300, 30, color(0, 255, 0));
   s2 = new Square(450, 300, 30, color(255, 0, 0));
-  s3 = new Square(250, 300, 30, color(0, 0, 255));
-  world.push(s1, s2, s3);
+  world.push(s1, s2);
   collideBox = createCheckbox('Collisions?');
   collideBox.checked(true);
+  createP('Speed');
+  speedSlider = createSlider(1, 10, 2, 0.5);
+  speedP = createP('');
 }
 
 
 
 function draw() {
   background(51);
+  speedP.html(speedSlider.value());
   for (let element of world) {
     if (collideBox.checked()) {
       element.checkCollisions(world);
